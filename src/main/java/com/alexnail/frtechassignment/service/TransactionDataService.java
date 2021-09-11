@@ -11,4 +11,6 @@ public interface TransactionDataService {
     TransactionData getTransaction(TransactionId transactionId);
 
     Collection<TransactionData> saveTransactions(Collection<TransactionData> entities);
+
+    TransactionData saveTransaction(TransactionData item);
 }

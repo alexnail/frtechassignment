@@ -1,0 +1,9 @@
+spring:
+  mvc:
+    format:
+      date: dd-MM-yyyy
+
+transactiondata:
+  externalsystem:
+    log:
+      path: ./externalsystem.event.log

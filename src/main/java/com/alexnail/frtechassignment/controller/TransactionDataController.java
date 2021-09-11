@@ -6,7 +6,6 @@ import com.alexnail.frtechassignment.model.TransactionId;
 import com.alexnail.frtechassignment.service.TransactionDataService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +38,7 @@ public class TransactionDataController {
     }
 
     @GetMapping("/{date}")
-    public TransactionDataDto getTransaction(@PathVariable("date") @DateTimeFormat(pattern = "dd-MM-yyyy")  LocalDate date,
+    public TransactionDataDto getTransaction(@PathVariable("date") LocalDate date,
                                              @RequestParam(defaultValue = "credit") String type) {
         TransactionData transaction = service.getTransaction(new TransactionId(date, type));
         if (transaction == null)
