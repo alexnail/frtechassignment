@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -21,16 +22,21 @@ public class TransactionDataRepositoryImpl implements TransactionDataRepository 
 
     @Value("${transactiondata.storage.file.path}")
     private String storagePath;
-
+    private File storage;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @PostConstruct
+    private void init() {
+        storage = new File(storagePath);
+    }
 
     @Override
     public TransactionData save(TransactionData item) {
         Set<TransactionData> all = findAll();
         all.add(item);
         try {
-            objectMapper.writeValue(new File(storagePath), all);
+            objectMapper.writeValue(storage, all);
             return item;
         } catch (IOException e) {
             log.error(String.format("Failed to save %s to %s", item, storagePath), e);
@@ -50,11 +56,23 @@ public class TransactionDataRepositoryImpl implements TransactionDataRepository 
     @Override
     public Set<TransactionData> findAll() {
         try {
-            return objectMapper.readValue(new File(storagePath), new TypeReference<>() {
+            return objectMapper.readValue(storage, new TypeReference<>() {
             });
         } catch (IOException e) {
-            log.error(String.format("Failed to read TransactionData list from %s", storagePath), e);
+            log.error(String.format("Failed to read TransactionData set from %s", storagePath), e);
         }
         return Set.of();
+    }
+
+    @Override
+    public Set<TransactionData> deleteAll() {
+        Set<TransactionData> all = findAll();
+        try {
+            objectMapper.writeValue(storage, Set.of());
+            return all;
+        } catch (IOException e) {
+            log.error(String.format("Failed to delete TransactionData set from %s", storagePath), e);
+            return Set.of();
+        }
     }
 }

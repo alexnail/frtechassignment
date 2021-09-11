@@ -9,4 +9,5 @@ public interface TransactionDataRepository {
     TransactionData save(TransactionData item);
     TransactionData getById(TransactionId item);
     Set<TransactionData> findAll();
+    Set<TransactionData> deleteAll();
 }
