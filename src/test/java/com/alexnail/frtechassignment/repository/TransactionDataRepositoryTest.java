@@ -5,6 +5,8 @@ import com.alexnail.frtechassignment.model.TransactionId;
 import com.alexnail.frtechassignment.repository.impl.TransactionDataRepositoryImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Set;
@@ -31,12 +35,20 @@ class TransactionDataRepositoryTest {
     @Autowired
     private TransactionDataRepository repository;
 
+    @SneakyThrows
     @BeforeEach
     void setUp() {
+        Files.deleteIfExists(Paths.get("src/test/resources/transactions.json"));
         repository.deleteAll();
 
         repository.save(new TransactionData(DATE, "credit", 123.45));
         repository.save(new TransactionData(DATE, "debit", 456.78));
+    }
+
+    @SneakyThrows
+    @AfterEach
+    void tearDown() {
+        Files.deleteIfExists(Paths.get("src/test/resources/transactions.json"));
     }
 
     @Test
