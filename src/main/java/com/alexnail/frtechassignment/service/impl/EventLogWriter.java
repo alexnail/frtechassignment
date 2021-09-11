@@ -2,23 +2,29 @@ package com.alexnail.frtechassignment.service.impl;
 
 import com.alexnail.frtechassignment.service.ExternalSystemClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static java.nio.file.StandardOpenOption.*;
 
 @Service
 @Slf4j
 public class EventLogWriter implements ExternalSystemClient {
 
-    //FIXME: address the issue of @Value can't be read
-    /*@Value("${transactiondata.externalsystem.log.path}")
-    private static String LOG_PATH;*/
+    @Value("${transactiondata.externalsystem.log.path}")
+    private String logPath;
 
     @Override
     public void sendMessage(String message) {
-        /*try {
-            Files.writeString(Paths.get(LOG_PATH), message, StandardCharsets.UTF_8, CREATE, WRITE, APPEND);
+        try {
+            Files.writeString(Paths.get(logPath), message, StandardCharsets.UTF_8, CREATE, WRITE, APPEND);
         } catch (IOException e) {
             log.error(String.format("Failed to add the message %s to the event log.", message),e);
-        }*/
-        log.info(message);
+        }
     }
 }
