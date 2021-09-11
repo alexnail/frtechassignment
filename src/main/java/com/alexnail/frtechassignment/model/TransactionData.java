@@ -1,5 +1,6 @@
 package com.alexnail.frtechassignment.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,17 +8,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-//@Entity
-//@IdClass(TransactionId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionData {
 
-    //@Id
+    //Hardcoding the pattern here isn't the nicest solution but there's no other option to set it from config -> annotations are being processed at compile time
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate date;
-    //@Id
+
     private String type;
 
-    // Double is used here for simplicity purpose, in prod I'd go with BigDecimal
-    private Double amount;
+    private Double amount; // Double is used here for simplicity purpose, in prod I'd go with BigDecimal
 }

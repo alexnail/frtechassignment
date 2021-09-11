@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -38,7 +39,7 @@ class TransactionDataServiceTest {
     void testGetAllTransactions() {
         LocalDate date = LocalDate.of(2021, Month.SEPTEMBER, 10);
         when(repository.findAll())
-                .thenReturn(List.of(
+                .thenReturn(Set.of(
                         new TransactionData(date, "credit", 123.45),
                         new TransactionData(date, "debit", 456.78)
                 ));

@@ -4,6 +4,9 @@ spring:
       date: dd-MM-yyyy
 
 transactiondata:
+  storage:
+    file:
+      path: src/main/resources/transactions.json
   externalsystem:
     log:
-      path: ./externalsystem.event.log
+      path: src/main/resources/externalsystem.event.log
