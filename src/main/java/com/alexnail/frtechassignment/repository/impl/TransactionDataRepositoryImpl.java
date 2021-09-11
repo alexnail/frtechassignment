@@ -13,8 +13,13 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -27,16 +32,21 @@ public class TransactionDataRepositoryImpl implements TransactionDataRepository 
     private ObjectMapper objectMapper;
 
     @PostConstruct
-    private void init() {
+    private void init() throws IOException {
         storage = new File(storagePath);
+        if (!storage.exists()){
+            Files.createDirectories(Paths.get(storagePath).getParent());
+            Files.createFile(Paths.get(storagePath));
+        }
     }
 
     @Override
     public TransactionData save(TransactionData item) {
-        Set<TransactionData> all = findAll();
-        all.add(item);
+        Map<TransactionId, TransactionData> transactionMap = findAll().stream()
+                .collect(Collectors.toMap(TransactionData::getId, Function.identity()));
+        transactionMap.put(item.getId(), item);
         try {
-            objectMapper.writeValue(storage, all);
+            objectMapper.writeValue(storage, transactionMap.values());
             return item;
         } catch (IOException e) {
             log.error(String.format("Failed to save %s to %s", item, storagePath), e);

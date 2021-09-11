@@ -1,7 +1,6 @@
 package com.alexnail.frtechassignment.controller;
 
 import com.alexnail.frtechassignment.model.TransactionData;
-import com.alexnail.frtechassignment.model.TransactionId;
 import com.alexnail.frtechassignment.service.TransactionDataService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -17,11 +16,15 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.http.MediaType.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.anyCollection;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TransactionDataController.class)
@@ -53,7 +56,7 @@ class TransactionDataControllerTest {
     @Test
     void testGetTransactionByDate() {
         TransactionData item1 = new TransactionData(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit", 123.12);
-        given(service.getTransaction(new TransactionId(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit"))).willReturn(item1);
+        given(service.getTransaction(item1.getId())).willReturn(item1);
 
         mvc.perform(get("/api/transactiondata/10-09-2021").contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -66,7 +69,7 @@ class TransactionDataControllerTest {
     @Test
     void testGetTransactionByDateAndTypeNotFound() {
         TransactionData item1 = new TransactionData(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit", 123.12);
-        given(service.getTransaction(new TransactionId(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit"))).willReturn(item1);
+        given(service.getTransaction(item1.getId())).willReturn(item1);
 
         mvc.perform(get("/api/transactiondata/10-09-2021?type=debit").contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -76,7 +79,7 @@ class TransactionDataControllerTest {
     @Test
     void testGetTransactionByDateAndType() {
         TransactionData item1 = new TransactionData(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit", 123.12);
-        given(service.getTransaction(new TransactionId(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit"))).willReturn(item1);
+        given(service.getTransaction(item1.getId())).willReturn(item1);
 
         mvc.perform(get("/api/transactiondata/10-09-2021?type=credit").contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())

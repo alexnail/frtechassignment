@@ -40,11 +40,10 @@ public class TransactionDataServiceImpl implements TransactionDataService {
 
     @Override
     public TransactionData saveTransaction(TransactionData item) {
-        TransactionId id = new TransactionId(item.getDate(), item.getType());
-        TransactionData existing = repository.getById(id);
+        TransactionData existing = repository.getById(item.getId());
         if (existing != null) {
             externalSystemClient.sendMessage(
-                    String.format(EXTERNAL_SYSTEM_MESSAGE_TEMPLATE, id, existing.getAmount(), item.getAmount()));
+                    String.format(EXTERNAL_SYSTEM_MESSAGE_TEMPLATE, item.getId(), existing.getAmount(), item.getAmount()));
             item.setAmount(existing.getAmount() + item.getAmount());
         }
         return repository.save(item);

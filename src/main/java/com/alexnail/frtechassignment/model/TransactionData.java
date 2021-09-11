@@ -1,6 +1,7 @@
 package com.alexnail.frtechassignment.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,9 @@ public class TransactionData {
     private String type;
 
     private Double amount; // Double is used here for simplicity purpose, in prod I'd go with BigDecimal
+
+    @JsonIgnore
+    public TransactionId getId() {
+        return new TransactionId(date, type);
+    }
 }

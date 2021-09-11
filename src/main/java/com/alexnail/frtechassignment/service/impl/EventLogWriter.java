@@ -22,7 +22,7 @@ public class EventLogWriter implements ExternalSystemClient {
     @Override
     public void sendMessage(String message) {
         try {
-            Files.writeString(Paths.get(logPath), message, StandardCharsets.UTF_8, CREATE, WRITE, APPEND);
+            Files.writeString(Paths.get(logPath), String.format("%s%n",message), StandardCharsets.UTF_8, CREATE, WRITE, APPEND);
         } catch (IOException e) {
             log.error(String.format("Failed to add the message %s to the event log.", message),e);
         }

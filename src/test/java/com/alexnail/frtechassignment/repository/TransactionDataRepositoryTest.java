@@ -3,6 +3,7 @@ package com.alexnail.frtechassignment.repository;
 import com.alexnail.frtechassignment.model.TransactionData;
 import com.alexnail.frtechassignment.model.TransactionId;
 import com.alexnail.frtechassignment.repository.impl.TransactionDataRepositoryImpl;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
@@ -132,6 +133,7 @@ class TransactionDataRepositoryTest {
         public ObjectMapper objectMapper() {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             return objectMapper;
         }
     }
