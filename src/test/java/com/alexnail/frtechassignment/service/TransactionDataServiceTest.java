@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,23 @@ class TransactionDataServiceTest {
                 () -> assertFalse(transactions.isEmpty()),
                 () -> assertEquals(2, transactions.size())
         );
+    }
+
+    @Test
+    void testGetAllTransactionsAreOrderedByDate() {
+        when(repository.findAll())
+                .thenReturn(Set.of(
+                        new TransactionData(LocalDate.of(2021, Month.SEPTEMBER, 11), "credit", 123.45),
+                        new TransactionData(LocalDate.of(2021, Month.SEPTEMBER, 10), "credit", 123.45),
+                        new TransactionData(LocalDate.of(2021, Month.DECEMBER, 31), "credit", 123.45),
+                        new TransactionData(LocalDate.of(2020, Month.JANUARY, 1), "credit", 123.45),
+                        new TransactionData(LocalDate.of(2021, Month.AUGUST, 10), "credit", 123.45),
+                        new TransactionData(LocalDate.of(2020, Month.SEPTEMBER, 10), "credit", 123.45)
+
+                ));
+        ArrayList<TransactionData> all = new ArrayList<>(service.getAllTransactions());
+        assertEquals(LocalDate.of(2020, Month.JANUARY, 1), all.get(0).getDate());
+        assertEquals(LocalDate.of(2021, Month.DECEMBER, 31), all.get(all.size() - 1).getDate());
     }
 
     @Test

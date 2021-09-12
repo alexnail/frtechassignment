@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +48,10 @@ public class TransactionDataRepositoryImpl implements TransactionDataRepository 
                 .collect(Collectors.toMap(TransactionData::getId, Function.identity()));
         transactionMap.put(item.getId(), item);
         try {
-            objectMapper.writeValue(storage, transactionMap.values());
+            List<TransactionData> sorted = transactionMap.values().stream()
+                    .sorted(Comparator.comparing(TransactionData::getDate))
+                    .collect(Collectors.toList());
+            objectMapper.writeValue(storage, sorted);
             return item;
         } catch (IOException e) {
             log.error(String.format("Failed to save %s to %s", item, storagePath), e);
@@ -58,7 +63,6 @@ public class TransactionDataRepositoryImpl implements TransactionDataRepository 
     public TransactionData getById(TransactionId id) {
         return findAll().stream()
                 .filter(i -> Objects.equals(i.getDate(), id.getDate()) && Objects.equals(i.getType(), id.getType()))
-                .peek(System.out::println)
                 .findFirst()
                 .orElse(null);
     }
